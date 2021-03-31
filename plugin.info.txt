@@ -1,0 +1,7 @@
+base   rndtxt
+author Andreas Gohr
+email  andi@splitbrain.org
+date   2021-03-31
+name   rndtxt plugin
+desc   Output a random text choice
+url    https://www.dokuwiki.org/plugin:rndtxt
