@@ -6,84 +6,53 @@
  * @author  Andreas Gohr <andi@splitbrain.org>
  */
 
-// must be run within Dokuwiki
-if (!defined('DOKU_INC')) {
-    die();
-}
-
 class syntax_plugin_rndtxt extends DokuWiki_Syntax_Plugin
 {
-    /**
-     * @return string Syntax mode type
-     */
+    /** @inheritDoc */
     public function getType()
     {
-        return 'FIXME: container|baseonly|formatting|substition|protected|disabled|paragraphs';
+        return 'substition';
     }
 
-    /**
-     * @return string Paragraph type
-     */
+    /** @inheritDoc */
     public function getPType()
     {
-        return 'FIXME: normal|block|stack';
+        return 'normal';
     }
 
-    /**
-     * @return int Sort order - Low numbers go before high numbers
-     */
+    /** @inheritDoc */
     public function getSort()
     {
-        return FIXME;
+        return 155;
     }
 
-    /**
-     * Connect lookup pattern to lexer.
-     *
-     * @param string $mode Parser mode
-     */
+    /** @inheritDoc */
     public function connectTo($mode)
     {
-        $this->Lexer->addSpecialPattern('<FIXME>', $mode, 'plugin_rndtxt');
-//        $this->Lexer->addEntryPattern('<FIXME>', $mode, 'plugin_rndtxt');
+        $this->Lexer->addSpecialPattern('{\?.*?\?}', $mode, 'plugin_rndtxt');
     }
 
-//    public function postConnect()
-//    {
-//        $this->Lexer->addExitPattern('</FIXME>', 'plugin_rndtxt');
-//    }
-
-    /**
-     * Handle matches of the rndtxt syntax
-     *
-     * @param string       $match   The match of the syntax
-     * @param int          $state   The state of the handler
-     * @param int          $pos     The position in the document
-     * @param Doku_Handler $handler The handler
-     *
-     * @return array Data for the renderer
-     */
+    /** @inheritDoc */
     public function handle($match, $state, $pos, Doku_Handler $handler)
     {
-        $data = array();
-
+        $match = substr($match, 2, -2);
+        $data = explode('|', $match);
+        $data = array_map('trim', $data);
+        $data = array_unique($data);
         return $data;
     }
 
-    /**
-     * Render xhtml output or metadata
-     *
-     * @param string        $mode     Renderer mode (supported modes: xhtml)
-     * @param Doku_Renderer $renderer The renderer
-     * @param array         $data     The data from the handler() function
-     *
-     * @return bool If rendering was successful.
-     */
+    /** @inheritDoc */
     public function render($mode, Doku_Renderer $renderer, $data)
     {
         if ($mode !== 'xhtml') {
             return false;
         }
+
+        $renderer->nocache();
+
+        $idx = array_rand($data);
+        $renderer->cdata($data[$idx]);
 
         return true;
     }
